@@ -9,11 +9,13 @@
 #include <string.h>
 #include "httpServer.hpp"
 
+int listenfd;
+
 int httpServer::createHttpServer(char *port) {
 
-  printf("create HTTP Server\n");
-  
-  struct addrinfo hints, *res;
+  printf("start create HTTP Server >>>>>>>>>>>>\n");
+
+  struct addrinfo hints, *result, *rp;
 
   memset(&hints, 0, sizeof(hints));
   hints.ai_family = AF_UNSPEC;       //choose a AF_INET(IPv4) /  AF_INET6(IPv6) / AF_UNSPEC
@@ -26,10 +28,33 @@ int httpServer::createHttpServer(char *port) {
   //                 const struct addrinfo *hints,
   //                 struct addrinfo **res)
   //return : success == 0 , fail != 0
-  if (getaddrinfo(NULL, port, &hints, &res) != 0) {
+  if (getaddrinfo(NULL, port, &hints, &result) != 0) {
     printf("getaddrinfo is failed..\n");
     return -1;
   }
 
+  for (rp = result ; rp != NULL; rp = rp->ai_next) {
+    listenfd = socket(rp->ai_family, rp->ai_socktype, 0);
+    if (listenfd == -1)
+      continue;
+    if (bind(listenfd, rp->ai_addr, rp->ai_addrlen) == 0)
+      break;
+  }
+
+  if (rp == NULL) {
+    return -1;
+  }
+
+  freeaddrinfo(result);
+
+  //[reference] http://man7.org/linux/man-pages/man2/listen.2.html
+  //int listen(int sockfd, int backlog)
+  //The sockfd argument is a file descriptor that refers to a socket of type SOCK_STREAM or SOCK_SEQPACKET
+  //The backlog argument defines the maximum length to which the queue of pending connections for sockfd may grow.
+  if (listen(listenfd, 10) != 0) {
+    printf("listen error : maximum backlog length is 10\n");
+    return -1;
+  }
+  
   return 0;
 }

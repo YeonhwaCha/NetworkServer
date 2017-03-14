@@ -10,6 +10,8 @@ public:
   ~httpServer();
 
   static int createHttpServer(char *port);
+
+private:
 };
 
 #endif
