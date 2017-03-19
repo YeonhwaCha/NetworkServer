@@ -9,9 +9,7 @@
 #include <string.h>
 #include "httpServer.hpp"
 
-int listenfd;
-
-int httpServer::createHttpServer(char *port) {
+int HttpServer::createHttpServer(char *port) {
 
   printf("start create HTTP Server >>>>>>>>>>>>\n");
 
@@ -57,4 +55,7 @@ int httpServer::createHttpServer(char *port) {
   }
   
   return 0;
+}
+
+void respond(int n) {
 }
