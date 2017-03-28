@@ -1,5 +1,5 @@
 //
-// #httpind fserver.cpp
+// #httpServer.cpp
 //
 #include <stdio.h>
 #include <sys/types.h>
@@ -8,6 +8,12 @@
 #include <stdlib.h>
 #include <string.h>
 #include "httpServer.hpp"
+
+HttpServer::HttpServer() {
+}
+
+HttpServer::~HttpServer() {
+}
 
 int HttpServer::createHttpServer(char *port) {
 
@@ -32,9 +38,11 @@ int HttpServer::createHttpServer(char *port) {
   }
 
   for (rp = result ; rp != NULL; rp = rp->ai_next) {
+    //[step1] socket()
     listenfd = socket(rp->ai_family, rp->ai_socktype, 0);
     if (listenfd == -1)
       continue;
+    //[step2] bind()
     if (bind(listenfd, rp->ai_addr, rp->ai_addrlen) == 0)
       break;
   }
@@ -49,13 +57,11 @@ int HttpServer::createHttpServer(char *port) {
   //int listen(int sockfd, int backlog)
   //The sockfd argument is a file descriptor that refers to a socket of type SOCK_STREAM or SOCK_SEQPACKET
   //The backlog argument defines the maximum length to which the queue of pending connections for sockfd may grow.
+  //[step3] listen()
   if (listen(listenfd, 10) != 0) {
     printf("listen error : maximum backlog length is 10\n");
     return -1;
   }
-  
+ 
   return 0;
-}
-
-void respond(int n) {
 }
