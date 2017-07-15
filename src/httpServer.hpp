@@ -6,18 +6,27 @@
 
 class HttpServer {
 public:
-  HttpServer();
-  ~HttpServer();
+	// HttpServer();
+	// ~HttpServer();
   
-  //variable
-  static const int CONNMAX = 1000;
-  int listenfd;
+  	//variable
   
-  //method
-  int createHttpServer(char *port);
+  	//method
+  	int createHttpServer(char *ip_addr, char *port);
+	//void run();
 
 private:
-  //int listenfd;
+	//variable
+	char buffer[256];
+	int clients[1000];
+	int listenfd;
+	int numOfReadWrite;
+	int slot;
+	socklen_t addrlen;
+	struct sockaddr_in clientaddr;
+
+	//method
+	void do_accept();
 };
 
 #endif
