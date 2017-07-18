@@ -1,19 +1,23 @@
+//
+// 2017.7.15 
+// main.cpp
+// use : server.out {ip} {port}
+
 #include <stdio.h>
 #include <string.h>
+#include <sys/socket.h> //relate socklen_t
+#include <netinet/in.h> //relate sockaddr_in
 #include "httpServer.hpp"
 
-int main() {
-  struct sockaddr_in clientaddr;
-  char PORT[6];
-  strcpy(PORT, "8090");
+int main(int argc, char* argv[]) {
 
-  if (httpServer::createHttpServer(PORT) != -1) {
-    printf("create server success!!\n");
-  }
+	printf("use : ./server.out {ip address} {port}\n");
 
-  while(1) {
-    
-  }
+	HttpServer Server;
+
+	if(Server.createHttpServer(argv[1], argv[2])!=-1) {
+		printf("create server successfully.. \n");
+	}
 
   return 0;
 }
