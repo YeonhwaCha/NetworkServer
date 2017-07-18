@@ -54,6 +54,7 @@ int HttpServer::createHttpServer(char *ip_addr, char *port) {
     	return -1;
   	}
 
+<<<<<<< HEAD
   	freeaddrinfo(result);
 
   	//[reference] http://man7.org/linux/man-pages/man2/listen.2.html
@@ -69,6 +70,43 @@ int HttpServer::createHttpServer(char *ip_addr, char *port) {
 	//[step4] accept()
 	do_accept();
  
+=======
+  //[reference] https://www.joinc.co.kr/w/man/3/getaddrinfo
+  //you can see getaddrinfo() when you type 'man getaddrinfo' on terminal
+  //int getaddrinfo( const char *node,
+  //                 const char * service,
+  //                 const struct addrinfo *hints,
+  //                 struct addrinfo **res)
+  //return : success == 0 , fail != 0
+  if (getaddrinfo(NULL, port, &hints, &result) != 0) {
+    printf("getaddrinfo is failed..\n");
+    return -1;
+  }
+
+  for (rp = result ; rp != NULL; rp = rp->ai_next) {
+    listenfd = socket(rp->ai_family, rp->ai_socktype, 0);
+    if (listenfd == -1)
+      continue;
+    if (bind(listenfd, rp->ai_addr, rp->ai_addrlen) == 0)
+      break;
+  }
+
+  if (rp == NULL) {
+    return -1;
+  }
+
+  freeaddrinfo(result);
+
+  //[reference] http://man7.org/linux/man-pages/man2/listen.2.html
+  //int listen(int sockfd, int backlog)
+  //The sockfd argument is a file descriptor that refers to a socket of type SOCK_STREAM or SOCK_SEQPACKET
+  //The backlog argument defines the maximum length to which the queue of pending connections for sockfd may grow.
+  if (listen(listenfd, 10) != 0) {
+    printf("listen error : maximum backlog length is 10\n");
+    return -1;
+  }
+  
+>>>>>>> origin/master
   return 0;
 }
 
